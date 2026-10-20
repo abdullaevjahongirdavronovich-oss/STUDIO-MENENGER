@@ -2,8 +2,9 @@
 <html lang="uz" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JM Records - Studio Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>StudioPro - Arenda & Mijozlar Menejeri</title>
+    <!-- Tailwind CSS with direct config -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -11,113 +12,733 @@
             theme: {
                 extend: {
                     colors: {
-                        studioDark: '#0f172a',
-                        studioCard: '#1e293b',
-                        studioBorder: '#334155'
+                        studio: {
+                            900: '#0b0f19',
+                            800: '#111827',
+                            700: '#1f2937',
+                            600: '#374151',
+                            accent: '#f97316',
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4',
+                        }
                     }
                 }
             }
         }
     </script>
+    <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+    </style>
 </head>
-<body class="bg-studioDark text-slate-100 min-h-screen p-4 md:p-8">
-    <div class="max-w-6xl mx-auto">
-        <!-- Header -->
-        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 bg-studioCard p-6 rounded-2xl border border-studioBorder shadow-xl">
-            <div class="flex items-center gap-4">
-                <div class="bg-gradient-to-tr from-purple-600 to-pink-600 p-3.5 rounded-xl shadow-lg shadow-purple-900/50">
-                    <i class="fa-solid fa-microphone-studio text-2xl text-white"></i>
+<body class="bg-[#0b0f19] text-gray-100 min-h-screen flex flex-col selection:bg-orange-500 selection:text-white">
+
+    <!-- Header Navigation -->
+    <header class="bg-[#111827]/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-500 to-purple-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
+                    <i class="fa-solid fa-microphone-lines text-white text-lg"></i>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-black tracking-wider bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">JM Records</h1>
-                    <p class="text-xs font-semibold text-purple-400 mt-1 uppercase tracking-widest">Studiya Boshqaruv Paneli</p>
+                    <h1 class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-gray-200 to-orange-500 bg-clip-text text-transparent">StudioPro Manager</h1>
+                    <p class="text-xs text-gray-400 font-medium">JM Records</p>
                 </div>
             </div>
-            <div class="flex items-center gap-3 w-full md:w-auto">
-                <button onclick="alert('Mijoz qo\'shish oynasi')" class="flex-1 md:flex-none bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 px-5 py-3 rounded-xl font-bold text-sm shadow-lg shadow-purple-900/40 transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-plus"></i> Yangi Mijoz Qo'shish
+            
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <button onclick="openAiModal()" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-medium px-3 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm transition-all shadow-lg shadow-purple-600/20 flex items-center space-x-1.5">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span class="hidden sm:inline">AI Studio Maslahatchisi</span>
+                </button>
+                <button onclick="openClientModal()" class="bg-orange-500 hover:bg-orange-600 text-white font-medium px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm transition-all shadow-lg shadow-orange-600/20 flex items-center space-x-1.5">
+                    <i class="fa-solid fa-plus"></i>
+                    <span class="hidden sm:inline">Yangi Mijoz</span>
                 </button>
             </div>
-        </header>
+        </div>
+    </header>
 
-        <!-- Statistika -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div class="bg-studioCard p-5 rounded-2xl border border-studioBorder shadow-lg">
-                <div class="flex justify-between items-center">
-                    <p class="text-slate-400 text-xs font-bold uppercase">Ovoz yozishda</p>
-                    <i class="fa-solid fa-microphone text-red-400"></i>
-                </div>
-                <h3 class="text-3xl font-black text-red-400 mt-2">1 <span class="text-xs font-normal text-slate-400">ta trek</span></h3>
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- Notification Banner Container -->
+        <div id="alertBanner" class="hidden bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 p-4 rounded-2xl flex items-start space-x-3 shadow-lg">
+            <div class="text-amber-400 text-xl mt-0.5"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="flex-1">
+                <h3 class="font-semibold text-amber-200 text-sm">Diqqat: Yaqinlashayotgan Mixing Deadlinelar!</h3>
+                <p id="alertMessage" class="text-xs text-amber-300/80 mt-1">Sizda muddati tugayotgan mixing vazifalari bor.</p>
             </div>
-            <div class="bg-studioCard p-5 rounded-2xl border border-studioBorder shadow-lg">
-                <div class="flex justify-between items-center">
-                    <p class="text-slate-400 text-xs font-bold uppercase">Mixing jarayonida</p>
-                    <i class="fa-solid fa-sliders text-purple-400"></i>
+            <button onclick="dismissAlert()" class="text-gray-400 hover:text-white text-sm"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Dashboard Stats Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div class="bg-[#111827]/80 border border-gray-800 rounded-2xl p-4 flex items-center space-x-4 shadow-sm">
+                <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-users"></i>
                 </div>
-                <h3 class="text-3xl font-black text-purple-400 mt-2">2 <span class="text-xs font-normal text-slate-400">ta trek</span></h3>
+                <div>
+                    <p class="text-xs text-gray-400 font-medium">Jami Mijozlar</p>
+                    <h3 id="statTotalClients" class="text-2xl font-bold mt-0.5 text-white">0</h3>
+                </div>
             </div>
-            <div class="bg-studioCard p-5 rounded-2xl border border-studioBorder shadow-lg">
-                <div class="flex justify-between items-center">
-                    <p class="text-slate-400 text-xs font-bold uppercase">Muddati o'tgan (Deadline)</p>
-                    <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+
+            <div class="bg-[#111827]/80 border border-gray-800 rounded-2xl p-4 flex items-center space-x-4 shadow-sm">
+                <div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-microphone"></i>
                 </div>
-                <h3 class="text-3xl font-black text-amber-400 mt-2">0 <span class="text-xs font-normal text-slate-400">ta</span></h3>
+                <div>
+                    <p class="text-xs text-gray-400 font-medium">Ovoz Yozish</p>
+                    <h3 id="statRecording" class="text-2xl font-bold mt-0.5 text-white">0</h3>
+                </div>
             </div>
-            <div class="bg-studioCard p-5 rounded-2xl border border-studioBorder shadow-lg">
-                <div class="flex justify-between items-center">
-                    <p class="text-slate-400 text-xs font-bold uppercase">Tayyor bo'lganlar</p>
-                    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+
+            <div class="bg-[#111827]/80 border border-gray-800 rounded-2xl p-4 flex items-center space-x-4 shadow-sm">
+                <div class="w-12 h-12 rounded-xl bg-pink-500/10 text-pink-400 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-sliders"></i>
                 </div>
-                <h3 class="text-3xl font-black text-emerald-400 mt-2">4 <span class="text-xs font-normal text-slate-400">ta trek</span></h3>
+                <div>
+                    <p class="text-xs text-gray-400 font-medium">Mixing (3 kun)</p>
+                    <h3 id="statMixing" class="text-2xl font-bold mt-0.5 text-white">0</h3>
+                </div>
+            </div>
+
+            <div class="bg-[#111827]/80 border border-gray-800 rounded-2xl p-4 flex items-center space-x-4 shadow-sm">
+                <div class="w-12 h-12 rounded-xl bg-red-600/10 text-red-500 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-400 font-medium">Tugallanmagan</p>
+                    <h3 id="statExpired" class="text-2xl font-bold mt-0.5 text-white">0</h3>
+                </div>
+            </div>
+
+            <div class="bg-[#111827]/80 border border-gray-800 rounded-2xl p-4 flex items-center space-x-4 shadow-sm col-span-2 md:col-span-1">
+                <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-gray-400 font-medium">Tugatilgan</p>
+                    <h3 id="statCompleted" class="text-2xl font-bold mt-0.5 text-white">0</h3>
+                </div>
             </div>
         </div>
 
-        <!-- Jadval -->
-        <div class="bg-studioCard rounded-2xl border border-studioBorder shadow-xl overflow-hidden">
-            <div class="p-6 border-b border-studioBorder flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h3 class="font-bold text-lg text-slate-200">Faol Mijozlar va Loyihalar</h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Mixing va ovoz yozish jarayonidagi treklarni kuzatib boring</p>
-                </div>
-                <span class="text-xs bg-purple-900/60 border border-purple-700/50 text-purple-300 px-3.5 py-1.5 rounded-xl font-semibold">
-                    <i class="fa-solid fa-wallet mr-1.5"></i> Oylik Ijara: 3,000,000 UZS
+        <!-- Filters & Search Toolbar -->
+        <div class="bg-[#111827]/80 border border-gray-800 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm">
+            <div class="relative w-full md:w-80">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+                    <i class="fa-solid fa-search"></i>
                 </span>
+                <input type="text" id="searchInput" oninput="filterClients()" placeholder="Mijoz yoki trek nomini qidirish..." class="w-full bg-[#0b0f19] border border-gray-800 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-orange-500 transition-all text-gray-100 placeholder-gray-500">
             </div>
+
+            <div class="flex items-center space-x-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+                <button onclick="setStatusFilter('ALL')" id="filterBtn-ALL" class="px-4 py-2 rounded-xl text-xs font-semibold bg-orange-500 text-white transition-all whitespace-nowrap shadow">Barchasi</button>
+                <button onclick="setStatusFilter('RECORDING')" id="filterBtn-RECORDING" class="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-800 hover:bg-gray-700 text-gray-300 transition-all whitespace-nowrap">Ovoz Yozish</button>
+                <button onclick="setStatusFilter('MIXING')" id="filterBtn-MIXING" class="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-800 hover:bg-gray-700 text-gray-300 transition-all whitespace-nowrap">Mixing (3 kun)</button>
+                <button onclick="setStatusFilter('EXPIRED')" id="filterBtn-EXPIRED" class="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-800 hover:bg-gray-700 text-gray-300 transition-all whitespace-nowrap">Tugallanmagan</button>
+                <button onclick="setStatusFilter('COMPLETED')" id="filterBtn-COMPLETED" class="px-4 py-2 rounded-xl text-xs font-semibold bg-gray-800 hover:bg-gray-700 text-gray-300 transition-all whitespace-nowrap">Tugatilgan</button>
+            </div>
+        </div>
+
+        <!-- Main Content Table -->
+        <div class="bg-[#111827]/80 border border-gray-800 rounded-2xl overflow-hidden shadow-xl">
+            <div class="px-6 py-4 border-b border-gray-800 flex items-center justify-between">
+                <h2 class="font-bold text-base flex items-center space-x-2 text-white">
+                    <i class="fa-solid fa-list-check text-orange-500"></i>
+                    <span>Mijozlar va 3 Kunlik Mixing Grafigi</span>
+                </h2>
+                <span class="text-xs text-gray-400 bg-[#0b0f19] px-3 py-1 rounded-lg border border-gray-800">Oflayn rejim & AI</span>
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="border-b border-studioBorder text-xs text-slate-400 uppercase bg-slate-900/40">
-                            <th class="p-4">Mijoz / Artist</th>
-                            <th class="p-4">Trek Nomi</th>
-                            <th class="p-4">Holati</th>
-                            <th class="p-4">Deadline (Muddati)</th>
-                            <th class="p-4 text-right">Amallar</th>
+                        <tr class="border-b border-gray-800 bg-[#0b0f19]/40 text-xs uppercase tracking-wider text-gray-400 font-semibold">
+                            <th class="py-3 px-6">Mijoz Ismi</th>
+                            <th class="py-3 px-6">Trek / Loyiha</th>
+                            <th class="py-3 px-6">Ovoz Yozish Vaqti</th>
+                            <th class="py-3 px-6">Mixing Deadline (3 kun)</th>
+                            <th class="py-3 px-6">Holati</th>
+                            <th class="py-3 px-6 text-right">Amallar</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-studioBorder text-sm">
-                        <tr class="hover:bg-slate-800/40 transition">
-                            <td class="p-4 font-bold text-white">Jasur Rahimov</td>
-                            <td class="p-4 text-slate-300">"Yomg'irlar"</td>
-                            <td class="p-4"><span class="px-3 py-1 rounded-xl text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30">Ovoz yozish</span></td>
-                            <td class="p-4 text-slate-300 font-medium"><i class="fa-regular fa-clock mr-1.5 text-red-400"></i> Bugun</td>
-                            <td class="p-4 text-right">
-                                <button class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-700/50"><i class="fa-solid fa-pen-to-square"></i></button>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-slate-800/40 transition">
-                            <td class="p-4 font-bold text-white">Sardor</td>
-                            <td class="p-4 text-slate-300">"Tun" (Remix)</td>
-                            <td class="p-4"><span class="px-3 py-1 rounded-xl text-xs font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30">Mixing</span></td>
-                            <td class="p-4 text-slate-300 font-medium"><i class="fa-regular fa-clock mr-1.5 text-purple-400"></i> 3 kun qoldi</td>
-                            <td class="p-4 text-right">
-                                <button class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-700/50"><i class="fa-solid fa-pen-to-square"></i></button>
-                            </td>
-                        </tr>
+                    <tbody id="clientTableBody" class="divide-y divide-gray-800/60 text-sm">
+                        <!-- Dynamic rows -->
                     </tbody>
                 </table>
             </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden py-16 text-center space-y-3">
+                <div class="w-16 h-16 mx-auto bg-gray-800 text-gray-500 rounded-full flex items-center justify-center text-2xl">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
+                <h3 class="font-medium text-gray-300">Hozircha mijozlar mavjud emas</h3>
+                <p class="text-xs text-gray-500">Yangi mijoz qo'shish tugmasini bosib birinchi yozuvni kiriting.</p>
+                <button onclick="openClientModal()" class="mt-2 bg-gray-800 hover:bg-gray-700 text-gray-200 px-4 py-2 rounded-xl text-xs font-semibold transition-all">Mijoz Qo'shish</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-6 text-center text-xs text-gray-500 border-t border-gray-800/80">
+        <p>StudioPro Manager &copy; 2026. JM Records. Barcha huquqlar himoyalangan.</p>
+    </footer>
+
+    <!-- Add/Edit Client Modal -->
+    <div id="clientModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
+        <div class="bg-[#111827] border border-gray-800 w-full max-w-lg rounded-3xl p-6 shadow-2xl relative space-y-6">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                <h3 id="modalTitle" class="font-bold text-lg text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-user-plus text-orange-500"></i>
+                    <span>Yangi Mijoz Qo'shish</span>
+                </h3>
+                <button onclick="closeClientModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <form id="clientForm" onsubmit="saveClient(event)" class="space-y-4">
+                <input type="hidden" id="clientId">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Mijoz Ismi *</label>
+                        <input type="text" id="clientName" required placeholder="Masalan: Azizbek" class="w-full bg-[#0b0f19] border border-gray-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 text-gray-100 placeholder-gray-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Telefon Raqami</label>
+                        <input type="text" id="clientPhone" placeholder="+998 90 123 45 67" class="w-full bg-[#0b0f19] border border-gray-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 text-gray-100 placeholder-gray-600">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Trek / Loyiha Nomi *</label>
+                    <input type="text" id="trackName" required placeholder="Masalan: Tunggi Shahar (Rap)" class="w-full bg-[#0b0f19] border border-gray-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 text-gray-100 placeholder-gray-600">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Ovoz Yozish Sanasi va Vaqti *</label>
+                        <input type="datetime-local" id="recordingDateTime" required class="w-full bg-[#0b0f19] border border-gray-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 text-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-400 mb-1">Holati</label>
+                        <select id="clientStatus" class="w-full bg-[#0b0f19] border border-gray-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 text-gray-100">
+                            <option value="RECORDING">Ovoz Yozish Kutilmoqda</option>
+                            <option value="MIXING">Mixing Jarayonida</option>
+                            <option value="EXPIRED">Tugallanmagan (Deadline o'tdi)</option>
+                            <option value="COMPLETED">Tugatilgan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Izohlar / Qo'shimcha Ma'lumot</label>
+                    <textarea id="clientNotes" rows="3" placeholder="Masalan: Bit keyi G minor, tezligi 140 bpm..." class="w-full bg-[#0b0f19] border border-gray-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-500 text-gray-100 placeholder-gray-600"></textarea>
+                </div>
+
+                <div class="bg-[#0b0f19] p-3 rounded-xl border border-gray-800 text-xs text-gray-400 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-circle-info text-orange-500"></i>
+                        <span>3 kunlik mixing deadline avtomatik hisoblanadi.</span>
+                    </div>
+                    <button type="button" onclick="aiSuggestNotes()" class="text-purple-400 hover:text-purple-300 font-semibold flex items-center space-x-1">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>AI Maslahat</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-800">
+                    <button type="button" onclick="closeClientModal()" class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-gray-800 hover:bg-gray-700 text-gray-300 transition-all">Bekor qilish</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-xl text-xs font-semibold bg-orange-500 hover:bg-orange-600 text-white transition-all shadow-lg shadow-orange-600/20">Saqlash</button>
+                </div>
+            </form>
         </div>
     </div>
+
+    <!-- AI Studio Assistant Modal -->
+    <div id="aiModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden p-4">
+        <div class="bg-[#111827] border border-gray-800 w-full max-w-2xl rounded-3xl p-6 shadow-2xl relative space-y-6">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                <h3 class="font-bold text-lg text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-wand-magic-sparkles text-purple-400"></i>
+                    <span>Gemini AI Studio Maslahatchisi</span>
+                </h3>
+                <button onclick="closeAiModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <div class="space-y-4">
+                <p class="text-xs text-gray-400">Ovoz yozish studiyangiz uchun AI yordamida qo'shiq mavzulari, ovoz sozlamalari, mixing maslahatlari yoki mijozga yuboriladigan eslatma xabarlarini yarating.</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <button onclick="runAiAction('track_ideas')" class="p-3 bg-[#0b0f19] hover:bg-gray-800 border border-gray-800 rounded-xl text-xs font-medium text-left transition-all">
+                        <i class="fa-solid fa-lightbulb text-amber-400 mb-1 block text-base"></i>
+                        <span>Hit Trek G'oyalari</span>
+                    </button>
+                    <button onclick="runAiAction('mixing_tips')" class="p-3 bg-[#0b0f19] hover:bg-gray-800 border border-gray-800 rounded-xl text-xs font-medium text-left transition-all">
+                        <i class="fa-solid fa-sliders text-purple-400 mb-1 block text-base"></i>
+                        <span>Vokal Mixing Sirlari</span>
+                    </button>
+                    <button onclick="runAiAction('client_sms')" class="p-3 bg-[#0b0f19] hover:bg-gray-800 border border-gray-800 rounded-xl text-xs font-medium text-left transition-all">
+                        <i class="fa-solid fa-comment-sms text-emerald-400 mb-1 block text-base"></i>
+                        <span>Mijozga SMS Eslatma</span>
+                    </button>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-gray-400 mb-1">Maxsus savol yoki mavzu:</label>
+                    <div class="flex space-x-2">
+                        <input type="text" id="aiCustomPrompt" placeholder="Masalan: Rap vokaliga qanday EQ va kompressor qo'yay?" class="flex-1 bg-[#0b0f19] border border-gray-800 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-purple-500 text-gray-100 placeholder-gray-600">
+                        <button onclick="runAiCustom()" class="bg-purple-600 hover:bg-purple-500 text-white font-medium px-4 py-2 rounded-xl text-xs transition-all flex items-center space-x-1">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Yuborish</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-[#0b0f19] rounded-2xl p-4 border border-gray-800 min-h-[160px] max-h-[260px] overflow-y-auto">
+                    <div id="aiLoading" class="hidden flex items-center justify-center py-10 space-x-2 text-purple-400">
+                        <i class="fa-solid fa-spinner fa-spin text-lg"></i>
+                        <span class="text-xs">Gemini AI o'ylamoqda...</span>
+                    </div>
+                    <div id="aiResult" class="text-xs text-gray-300 leading-relaxed whitespace-pre-wrap">
+                        Bu yerda AI maslahatlari va javoblari chiqadi...
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end pt-2 border-t border-gray-800">
+                <button onclick="closeAiModal()" class="px-5 py-2 rounded-xl text-xs font-semibold bg-gray-800 hover:bg-gray-700 text-gray-300 transition-all">Yopish</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        const STORAGE_KEY = 'studio_pro_clients_v3';
+        let clients = [];
+        let currentFilter = 'ALL';
+
+        function saveToLocalStorage() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(clients));
+        }
+
+        function loadClients() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            if (data) {
+                try {
+                    clients = JSON.parse(data);
+                } catch (e) {
+                    clients = [];
+                }
+            } else {
+                const now = new Date();
+                const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+                clients = [
+                    {
+                        id: '1',
+                        name: 'Jasurbek',
+                        phone: '+998 93 555 11 22',
+                        track: 'Yulduzlar ostida',
+                        recordingDate: tomorrow.toISOString().slice(0, 16),
+                        mixingDeadline: new Date(tomorrow.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+                        status: 'RECORDING',
+                        notes: '2 soat ovoz yozish va 3 kun mixing.'
+                    }
+                ];
+                saveToLocalStorage();
+            }
+            checkAutomaticDeadlines();
+            renderApp();
+        }
+
+        function checkAutomaticDeadlines() {
+            const now = new Date();
+            let updated = false;
+
+            clients.forEach(c => {
+                if (c.status !== 'COMPLETED' && c.mixingDeadline) {
+                    const deadline = new Date(c.mixingDeadline);
+                    if (now > deadline && c.status !== 'EXPIRED') {
+                        c.status = 'EXPIRED';
+                        updated = true;
+                    }
+                }
+            });
+
+            if (updated) {
+                saveToLocalStorage();
+            }
+        }
+
+        function deleteClient(id) {
+            if (confirm("Rostdan ham bu mijozni o'chirib yubormoqchimisiz?")) {
+                clients = clients.filter(c => c.id !== id);
+                saveToLocalStorage();
+                renderApp();
+            }
+        }
+
+        function setStatusFilter(status) {
+            currentFilter = status;
+            ['ALL', 'RECORDING', 'MIXING', 'EXPIRED', 'COMPLETED'].forEach(s => {
+                const btn = document.getElementById(`filterBtn-${s}`);
+                if (btn) {
+                    if (s === status) {
+                        btn.className = "px-4 py-2 rounded-xl text-xs font-semibold bg-orange-500 text-white transition-all whitespace-nowrap shadow";
+                    } else {
+                        btn.className = "px-4 py-2 rounded-xl text-xs font-semibold bg-gray-800 hover:bg-gray-700 text-gray-300 transition-all whitespace-nowrap";
+                    }
+                }
+            });
+            renderTable();
+        }
+
+        function filterClients() {
+            renderTable();
+        }
+
+        function renderApp() {
+            checkAutomaticDeadlines();
+            updateStats();
+            checkAlerts();
+            renderTable();
+        }
+
+        function updateStats() {
+            document.getElementById('statTotalClients').innerText = clients.length;
+            document.getElementById('statRecording').innerText = clients.filter(c => c.status === 'RECORDING').length;
+            document.getElementById('statMixing').innerText = clients.filter(c => c.status === 'MIXING').length;
+            document.getElementById('statExpired').innerText = clients.filter(c => c.status === 'EXPIRED').length;
+            document.getElementById('statCompleted').innerText = clients.filter(c => c.status === 'COMPLETED').length;
+        }
+
+        function checkAlerts() {
+            const now = new Date();
+            let nearDeadlineCount = 0;
+
+            clients.forEach(c => {
+                if (c.status === 'MIXING') {
+                    const deadline = new Date(c.mixingDeadline);
+                    const diffHours = (deadline - now) / (1000 * 60 * 60);
+                    if (diffHours <= 24 && diffHours > 0) {
+                        nearDeadlineCount++;
+                    }
+                }
+            });
+
+            const banner = document.getElementById('alertBanner');
+            if (nearDeadlineCount > 0) {
+                document.getElementById('alertMessage').innerText = `Sizda muddati tugayotgan ${nearDeadlineCount} ta mixing vazifasi bor!`;
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
+        }
+
+        function dismissAlert() {
+            document.getElementById('alertBanner').classList.add('hidden');
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('clientTableBody');
+            const emptyState = document.getElementById('emptyState');
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+
+            let filtered = clients.filter(c => {
+                const matchesStatus = (currentFilter === 'ALL' || c.status === currentFilter);
+                const matchesSearch = c.name.toLowerCase().includes(searchQuery) || c.track.toLowerCase().includes(searchQuery);
+                return matchesStatus && matchesSearch;
+            });
+
+            filtered.sort((a, b) => new Date(a.recordingDate) - new Date(b.recordingDate));
+
+            tbody.innerHTML = '';
+
+            if (filtered.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filtered.forEach(client => {
+                let badgeHtml = '';
+                if (client.status === 'RECORDING') {
+                    badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20"><i class="fa-solid fa-microphone mr-1.5"></i> Ovoz Yozish</span>`;
+                } else if (client.status === 'MIXING') {
+                    badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-pink-500/10 text-pink-400 border border-pink-500/20"><i class="fa-solid fa-sliders mr-1.5"></i> Mixing (3 kun)</span>`;
+                } else if (client.status === 'EXPIRED') {
+                    badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-red-600/10 text-red-500 border border-red-600/20"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Tugallanmagan</span>`;
+                } else {
+                    badgeHtml = `<span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"><i class="fa-solid fa-check mr-1.5"></i> Tugatilgan</span>`;
+                }
+
+                let statusToggleBtns = '';
+                if (client.status === 'RECORDING') {
+                    statusToggleBtns = `<button onclick="changeClientStatus('${client.id}', 'MIXING')" title="Mixingga o'tkazish" class="px-2.5 py-1 rounded-lg bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 transition-all inline-flex items-center space-x-1 text-xs font-medium"><i class="fa-solid fa-sliders"></i><span>Mixing</span></button>`;
+                } else if (client.status === 'MIXING' || client.status === 'EXPIRED') {
+                    statusToggleBtns = `
+                        <button onclick="changeClientStatus('${client.id}', 'RECORDING')" title="Ovoz yozishga qaytarish" class="px-2 py-1 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-all inline-flex items-center space-x-1 text-xs font-medium"><i class="fa-solid fa-microphone"></i><span>Ovoz</span></button>
+                        <button onclick="changeClientStatus('${client.id}', 'COMPLETED')" title="Tugatish" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 transition-all inline-flex items-center space-x-1 text-xs font-medium"><i class="fa-solid fa-check"></i><span>Tugatish</span></button>
+                    `;
+                } else {
+                    statusToggleBtns = `<button onclick="changeClientStatus('${client.id}', 'MIXING')" title="Mixingga qaytarish" class="px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 transition-all inline-flex items-center space-x-1 text-xs font-medium"><i class="fa-solid fa-rotate-left"></i><span>Qaytarish</span></button>`;
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-800/40 transition-colors";
+                tr.innerHTML = `
+                    <td class="py-4 px-6 font-medium text-white">
+                        <div>${escapeHtml(client.name)}</div>
+                        ${client.phone ? `<div class="text-xs text-gray-400 mt-0.5"><i class="fa-solid fa-phone mr-1"></i>${escapeHtml(client.phone)}</div>` : ''}
+                    </td>
+                    <td class="py-4 px-6 text-gray-300">
+                        <div>${escapeHtml(client.track)}</div>
+                        ${client.notes ? `<div class="text-xs text-gray-500 truncate max-w-xs mt-0.5">${escapeHtml(client.notes)}</div>` : ''}
+                    </td>
+                    <td class="py-4 px-6 text-gray-300 text-xs font-mono">${formatDateDisplay(client.recordingDate)}</td>
+                    <td class="py-4 px-6 text-gray-300 text-xs font-mono font-semibold ${client.status === 'EXPIRED' ? 'text-red-500' : 'text-orange-500'}">${formatDateDisplay(client.mixingDeadline)}</td>
+                    <td class="py-4 px-6">${badgeHtml}</td>
+                    <td class="py-4 px-6 text-right space-x-2 whitespace-nowrap">
+                        ${statusToggleBtns}
+                        <button onclick="openClientModal('${client.id}')" title="Tahrirlash" class="w-8 h-8 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition-all inline-flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button onclick="deleteClient('${client.id}')" title="O'chirish" class="w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all inline-flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function changeClientStatus(id, newStatus) {
+            const client = clients.find(c => c.id === id);
+            if (client) {
+                client.status = newStatus;
+                if (newStatus === 'MIXING') {
+                    const now = new Date();
+                    client.mixingDeadline = new Date(now.getTime() + (3 * 24 * 60 * 60 * 1000)).toISOString();
+                }
+                saveToLocalStorage();
+                renderApp();
+            }
+        }
+
+        function formatDateDisplay(isoString) {
+            if (!isoString) return '';
+            const d = new Date(isoString);
+            const months = ["Yan", "Fev", "Mar", "Apr", "May", "Iyun", "Iyul", "Avg", "Sen", "Okt", "Noy", "Dek"];
+            const day = d.getDate();
+            const month = months[d.getMonth()];
+            const hour = String(d.getHours()).padStart(2, '0');
+            const min = String(d.getMinutes()).padStart(2, '0');
+            return `${day}-${month}, ${hour}:${min}`;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        function openClientModal(editId = null) {
+            const modal = document.getElementById('clientModal');
+            const title = document.getElementById('modalTitle');
+            const form = document.getElementById('clientForm');
+            form.reset();
+            document.getElementById('clientId').value = '';
+
+            if (editId) {
+                title.innerHTML = '<i class="fa-solid fa-pen text-orange-500"></i><span>Mijoz Ma\'lumotlarini Tahrirlash</span>';
+                const client = clients.find(c => c.id === editId);
+                if (client) {
+                    document.getElementById('clientId').value = client.id;
+                    document.getElementById('clientName').value = client.name;
+                    document.getElementById('clientPhone').value = client.phone || '';
+                    document.getElementById('trackName').value = client.track;
+                    document.getElementById('recordingDateTime').value = client.recordingDate;
+                    document.getElementById('clientStatus').value = client.status;
+                    document.getElementById('clientNotes').value = client.notes || '';
+                }
+            } else {
+                title.innerHTML = '<i class="fa-solid fa-user-plus text-orange-500"></i><span>Yangi Mijoz Qo\'shish</span>';
+                const now = new Date();
+                document.getElementById('recordingDateTime').value = now.toISOString().slice(0, 16);
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeClientModal() {
+            document.getElementById('clientModal').classList.add('hidden');
+        }
+
+        function saveClient(event) {
+            event.preventDefault();
+            const id = document.getElementById('clientId').value;
+            const name = document.getElementById('clientName').value.trim();
+            const phone = document.getElementById('clientPhone').value.trim();
+            const track = document.getElementById('trackName').value.trim();
+            const recordingDate = document.getElementById('recordingDateTime').value;
+            const status = document.getElementById('clientStatus').value;
+            const notes = document.getElementById('clientNotes').value.trim();
+
+            const recDateObj = new Date(recordingDate);
+            const mixingDeadline = new Date(recDateObj.getTime() + (3 * 24 * 60 * 60 * 1000)).toISOString();
+
+            if (id) {
+                const client = clients.find(c => c.id === id);
+                if (client) {
+                    client.name = name;
+                    client.phone = phone;
+                    client.track = track;
+                    client.recordingDate = recordingDate;
+                    client.mixingDeadline = mixingDeadline;
+                    client.status = status;
+                    client.notes = notes;
+                }
+            } else {
+                const newClient = {
+                    id: Date.now().toString(),
+                    name,
+                    phone,
+                    track,
+                    recordingDate,
+                    mixingDeadline,
+                    status,
+                    notes
+                };
+                clients.push(newClient);
+            }
+
+            saveToLocalStorage();
+            closeClientModal();
+            renderApp();
+        }
+
+        // --- GEMINI AI INTEGRATION FUNCTIONS ---
+
+        function openAiModal() {
+            document.getElementById('aiModal').classList.remove('hidden');
+        }
+
+        function closeAiModal() {
+            document.getElementById('aiModal').classList.add('hidden');
+        }
+
+        async function callGeminiApi(prompt) {
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: prompt }] }],
+                systemInstruction: {
+                    parts: [{ text: "Siz ovoz yozish studiyasi va ovoz rejissori uchun professional AI maslahatchisisiz. O'zbek tilida qisqa, aniq va foydali maslahatlar bering." }]
+                }
+            };
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+            const candidate = result.candidates?.[0];
+            if (candidate && candidate.content?.parts?.[0]?.text) {
+                return candidate.content.parts[0].text;
+            } else {
+                throw new Error("Javob olishda xatolik yuz berdi.");
+            }
+        }
+
+        async function runAiAction(actionType) {
+            const loading = document.getElementById('aiLoading');
+            const resultDiv = document.getElementById('aiResult');
+            loading.classList.remove('hidden');
+            resultDiv.innerText = '';
+
+            let prompt = "";
+            if (actionType === 'track_ideas') {
+                prompt = "Ovoz yozish studiyasi uchun zamonaviy va xit bo'lishi mumkin bo'lgan 3 ta trek g'oyasi va ularning mavzularini yozib ber.";
+            } else if (actionType === 'mixing_tips') {
+                prompt = "Vokalni toza va professional eshitilishi uchun mixing jarayonida nimalarga e'tibor berish kerak? 4 ta qisqa maslahat ber.";
+            } else if (actionType === 'client_sms') {
+                prompt = "Mijozga ovoz yozishga kelishi yoki mixing ishi tayyor bo'lgani haqida yuborish uchun chiroyli va samimiy SMS matnini tuzib ber.";
+            }
+
+            try {
+                const responseText = await callGeminiApi(prompt);
+                loading.classList.add('hidden');
+                resultDiv.innerText = responseText;
+            } catch (error) {
+                loading.classList.add('hidden');
+                resultDiv.innerText = "Xatolik: AI bilan bog'lanib bo'lmadi. Internet aloqasini tekshiring.";
+            }
+        }
+
+        async function runAiCustom() {
+            const input = document.getElementById('aiCustomPrompt');
+            const query = input.value.trim();
+            if (!query) return;
+
+            const loading = document.getElementById('aiLoading');
+            const resultDiv = document.getElementById('aiResult');
+            loading.classList.remove('hidden');
+            resultDiv.innerText = '';
+
+            try {
+                const responseText = await callGeminiApi(query);
+                loading.classList.add('hidden');
+                resultDiv.innerText = responseText;
+            } catch (error) {
+                loading.classList.add('hidden');
+                resultDiv.innerText = "Xatolik: AI bilan bog'lanib bo'lmadi.";
+            }
+        }
+
+        async function aiSuggestNotes() {
+            const trackName = document.getElementById('trackName').value || "Yangi trek";
+            const clientName = document.getElementById('clientName').value || "Mijoz";
+            const prompt = `${clientName} uchun ${trackName} nomli trekka ovoz yozish jarayonida eslatma sifatida yozib qo'yishga loyiq 2 ta qisqa texnik tavsiya tuzib ber (masalan: bit tezligi, vokal balandligi va hokazo).`;
+
+            try {
+                const suggestion = await callGeminiApi(prompt);
+                document.getElementById('clientNotes').value = suggestion.trim();
+            } catch (e) {
+                alert("AI tavsiyasini olishda xatolik yuz berdi.");
+            }
+        }
+
+        window.onload = function () {
+            loadClients();
+        };
+    </script>
 </body>
 </html>
