@@ -22,71 +22,96 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-studioDark text-slate-100 min-h-screen p-4 md:p-8">
-    <div class="max-w-5xl mx-auto">
+    <div class="max-w-6xl mx-auto">
         <!-- Header -->
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 bg-studioCard p-6 rounded-2xl border border-studioBorder shadow-xl">
-            <div>
-                <h1 class="text-3xl font-black tracking-wider bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">JM Records</h1>
-                <p class="text-sm font-semibold text-purple-400 mt-1">Studiya Boshqaruv Tizimi</p>
+            <div class="flex items-center gap-4">
+                <div class="bg-gradient-to-tr from-purple-600 to-pink-600 p-3.5 rounded-xl shadow-lg shadow-purple-900/50">
+                    <i class="fa-solid fa-microphone-studio text-2xl text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-black tracking-wider bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">JM Records</h1>
+                    <p class="text-xs font-semibold text-purple-400 mt-1 uppercase tracking-widest">Studiya Boshqaruv Paneli</p>
+                </div>
             </div>
-            <div class="flex gap-3 w-full md:w-auto">
-                <button onclick="alert('Mijoz qo\'shish oynasi ochildi!')" class="flex-1 md:flex-none bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-purple-900/40 transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-plus"></i> Yangi Mijoz
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <button onclick="alert('Mijoz qo\'shish oynasi')" class="flex-1 md:flex-none bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 px-5 py-3 rounded-xl font-bold text-sm shadow-lg shadow-purple-900/40 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-plus"></i> Yangi Mijoz Qo'shish
                 </button>
             </div>
         </header>
 
-        <!-- Statistika kartochkalari -->
+        <!-- Statistika -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div class="bg-studioCard p-5 rounded-2xl border border-studioBorder shadow-lg">
-                <p class="text-slate-400 text-xs font-bold uppercase">Ovoz yozishda</p>
-                <h3 class="text-2xl font-black text-red-400 mt-1">1 ta</h3>
+                <div class="flex justify-between items-center">
+                    <p class="text-slate-400 text-xs font-bold uppercase">Ovoz yozishda</p>
+                    <i class="fa-solid fa-microphone text-red-400"></i>
+                </div>
+                <h3 class="text-3xl font-black text-red-400 mt-2">1 <span class="text-xs font-normal text-slate-400">ta trek</span></h3>
             </div>
             <div class="bg-studioCard p-5 rounded-2xl border border-studioBorder shadow-lg">
-                <p class="text-slate-400 text-xs font-bold uppercase">Mixing jarayonida</p>
-                <h3 class="text-2xl font-black text-purple-400 mt-1">2 ta</h3>
+                <div class="flex justify-between items-center">
+                    <p class="text-slate-400 text-xs font-bold uppercase">Mixing jarayonida</p>
+                    <i class="fa-solid fa-sliders text-purple-400"></i>
+                </div>
+                <h3 class="text-3xl font-black text-purple-400 mt-2">2 <span class="text-xs font-normal text-slate-400">ta trek</span></h3>
             </div>
             <div class="bg-studioCard p-5 rounded-2xl border border-studioBorder shadow-lg">
-                <p class="text-slate-400 text-xs font-bold uppercase">Muddati o'tgan (Expired)</p>
-                <h3 class="text-2xl font-black text-red-500 mt-1">0 ta</h3>
+                <div class="flex justify-between items-center">
+                    <p class="text-slate-400 text-xs font-bold uppercase">Muddati o'tgan (Deadline)</p>
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+                </div>
+                <h3 class="text-3xl font-black text-amber-400 mt-2">0 <span class="text-xs font-normal text-slate-400">ta</span></h3>
             </div>
             <div class="bg-studioCard p-5 rounded-2xl border border-studioBorder shadow-lg">
-                <p class="text-slate-400 text-xs font-bold uppercase">Tugallangan</p>
-                <h3 class="text-2xl font-black text-green-400 mt-1">4 ta</h3>
+                <div class="flex justify-between items-center">
+                    <p class="text-slate-400 text-xs font-bold uppercase">Tayyor bo'lganlar</p>
+                    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                </div>
+                <h3 class="text-3xl font-black text-emerald-400 mt-2">4 <span class="text-xs font-normal text-slate-400">ta trek</span></h3>
             </div>
         </div>
 
-        <!-- Mijozlar jadvali -->
+        <!-- Jadval -->
         <div class="bg-studioCard rounded-2xl border border-studioBorder shadow-xl overflow-hidden">
-            <div class="p-6 border-b border-studioBorder flex justify-between items-center">
-                <h3 class="font-bold text-lg">Faol Mijozlar</h3>
-                <span class="text-xs bg-purple-900/60 text-purple-300 px-3 py-1 rounded-full font-semibold">Ijara: 3,000,000 UZS</span>
+            <div class="p-6 border-b border-studioBorder flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h3 class="font-bold text-lg text-slate-200">Faol Mijozlar va Loyihalar</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Mixing va ovoz yozish jarayonidagi treklarni kuzatib boring</p>
+                </div>
+                <span class="text-xs bg-purple-900/60 border border-purple-700/50 text-purple-300 px-3.5 py-1.5 rounded-xl font-semibold">
+                    <i class="fa-solid fa-wallet mr-1.5"></i> Oylik Ijara: 3,000,000 UZS
+                </span>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="border-b border-studioBorder text-xs text-slate-400 uppercase bg-slate-900/40">
-                            <th class="p-4">Mijoz / Trek</th>
+                            <th class="p-4">Mijoz / Artist</th>
+                            <th class="p-4">Trek Nomi</th>
                             <th class="p-4">Holati</th>
-                            <th class="p-4">Sana & Deadline</th>
+                            <th class="p-4">Deadline (Muddati)</th>
                             <th class="p-4 text-right">Amallar</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-studioBorder text-sm">
-                        <tr class="hover:bg-slate-800/50 transition">
-                            <td class="p-4 font-bold">Jasur - "Yomg'irlar"</td>
-                            <td class="p-4"><span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30">Ovoz yozish</span></td>
-                            <td class="p-4 text-slate-300">20.10.2026</td>
+                        <tr class="hover:bg-slate-800/40 transition">
+                            <td class="p-4 font-bold text-white">Jasur Rahimov</td>
+                            <td class="p-4 text-slate-300">"Yomg'irlar"</td>
+                            <td class="p-4"><span class="px-3 py-1 rounded-xl text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/30">Ovoz yozish</span></td>
+                            <td class="p-4 text-slate-300 font-medium"><i class="fa-regular fa-clock mr-1.5 text-red-400"></i> Bugun</td>
                             <td class="p-4 text-right">
-                                <button class="text-slate-400 hover:text-white px-2 py-1"><i class="fa-solid fa-pen"></i></button>
+                                <button class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-700/50"><i class="fa-solid fa-pen-to-square"></i></button>
                             </td>
                         </tr>
-                        <tr class="hover:bg-slate-800/50 transition">
-                            <td class="p-4 font-bold">Sardor - "Tun"</td>
-                            <td class="p-4"><span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30">Mixing</span></td>
-                            <td class="p-4 text-slate-300">Deadline: 3 kun</td>
+                        <tr class="hover:bg-slate-800/40 transition">
+                            <td class="p-4 font-bold text-white">Sardor</td>
+                            <td class="p-4 text-slate-300">"Tun" (Remix)</td>
+                            <td class="p-4"><span class="px-3 py-1 rounded-xl text-xs font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30">Mixing</span></td>
+                            <td class="p-4 text-slate-300 font-medium"><i class="fa-regular fa-clock mr-1.5 text-purple-400"></i> 3 kun qoldi</td>
                             <td class="p-4 text-right">
-                                <button class="text-slate-400 hover:text-white px-2 py-1"><i class="fa-solid fa-pen"></i></button>
+                                <button class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-700/50"><i class="fa-solid fa-pen-to-square"></i></button>
                             </td>
                         </tr>
                     </tbody>
